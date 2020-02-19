@@ -5,7 +5,7 @@ import (
 )
 
 // Proxy from https://www.sslproxies.org/
-type Proxy struct {
+type ProxyItem struct {
 	Ip        string
 	Port      string
 	Code      string
