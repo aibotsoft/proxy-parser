@@ -1,3 +1,3 @@
-module github.com/aibotsoft/go-template
+module github.com/aibotsoft/proxy-parser
 
 go 1.13
