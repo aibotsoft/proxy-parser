@@ -5,6 +5,7 @@ import (
 	"github.com/go-resty/resty/v2"
 )
 
+// Send proxy list to proxy-backend
 func SendProxyList(client *resty.Client, proxyList []models.ProxyItem) {
-
+	//client.R().Post('')
 }

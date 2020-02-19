@@ -55,10 +55,4 @@ func ProcessProxyPage(doc *html.Node) ([]models.ProxyItem, error) {
 
 	}
 	return proxyList, nil
-	//fmt.Println(resp.Body())
-	//fmt.Printf("%T", rawBody)
-	//fmt.Println("asdfsadfasdf", tr)
-	//fmt.Printf("%v:\n", p)
-	//fmt.Printf("%v:\n", htmlquery.InnerText(td[0]))
-
 }
