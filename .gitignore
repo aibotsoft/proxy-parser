@@ -15,4 +15,4 @@
 # vendor/
 .idea
 .env
-dist
+dist/
