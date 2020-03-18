@@ -1,0 +1,79 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: micro
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: service-kit
+  name: service-kit
+  namespace: micro
+spec:
+  selector:
+    app: service-kit
+  ports:
+    - name: service-kit
+      protocol: TCP
+      port: 80
+      targetPort: 80
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: micro-env
+  namespace: micro
+#  labels:
+#    app: mariadb
+data:
+  SERVICE_ENV: prod
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: service-kit
+  namespace: micro
+  labels:
+    app: service-kit
+data:
+  SERVICE_NAME: service-kit
+  SERVICE_ENVIRONMENT: prod
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-kit
+  namespace: micro
+  labels:
+    app: service-kit
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: service-kit
+  template:
+    metadata:
+      labels:
+        app: service-kit
+    spec:
+      terminationGracePeriodSeconds: 5
+      containers:
+        - name: service-kit
+          image: aibotsoft/service-kit
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: micro-env
+            - configMapRef:
+                name: service-kit
+          ports:
+            - name: service-kit
+              containerPort: 80
+          resources:
+            limits:
+              cpu: 100m
+              memory: 100Mi
+            requests:
+              cpu: 50m
+              memory: 50Mi
