@@ -16,7 +16,8 @@ func TestCollectProxy(t *testing.T) {
 	assert.NotEmpty(t, client)
 	proxyList, err := client.CollectProxy()
 	assert.Nil(t, err)
-	t.Log(proxyList)
+	assert.NotEmpty(t, proxyList)
+	//t.Log(proxyList)
 }
 
 func TestCollectProxyTimeout(t *testing.T) {

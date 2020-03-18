@@ -43,6 +43,6 @@ func TestStorage_SaveProxy(t *testing.T) {
 	assert.False(t, oldProxy, "Add not new proxy")
 }
 
-func TestStorage_SaveProxyList(t *testing.T) {
-
-}
+//func TestStorage_SaveProxyList(t *testing.T) {
+//
+//}

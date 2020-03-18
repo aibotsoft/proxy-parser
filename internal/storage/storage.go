@@ -29,31 +29,36 @@ func NewStorage(cfg *config.Config, log *log.Logger) (*Storage, error) {
 }
 
 func (s Storage) SaveProxy(p proxy_item.ProxyItem) bool {
-	s.log.Println(p)
+	//s.log.Println(p)
 	proxyKey := p.Ip + ":" + p.Port
-	s.log.Println(proxyKey)
+	//s.log.Println(proxyKey)
 
 	_, ok := s.cache.Get(proxyKey)
 	if ok {
-		s.log.Println("Proxy in cache: ")
+		//s.log.Println("Proxy in cache: ")
 		return false
 	}
-	s.log.Println("TODO: Отправляем прокси в nc")
-	s.log.Println("Сохраняем в кеш")
+	//s.log.Println("TODO: Отправляем прокси в nc")
+	//s.log.Println("Сохраняем в кеш")
 
 	ok = s.cache.Set(proxyKey, true, 1)
-	if ok {
-		s.log.Println("Сохранили в кеш")
-	}
 	return true
 
 }
 
 func (s Storage) SaveProxyList(proxyList []proxy_item.ProxyItem) {
-	for _, p := range proxyList {
-		s.SaveProxy(p)
-	}
+	countNewProxy := 0
+	s.log.Printf("Получили %d прокси для проверки", len(proxyList))
 
+	for _, p := range proxyList {
+		newProxy := s.SaveProxy(p)
+		if newProxy {
+			countNewProxy++
+			s.log.Printf("Добавили новое прокси %s", p.Ip)
+		}
+	}
+	s.log.Printf("Всего добавили %d новых прокси", countNewProxy)
+	s.log.Println(s.cache.Metrics)
 }
 
 func Connect(cfg *config.Config) (*nats.Conn, error) {

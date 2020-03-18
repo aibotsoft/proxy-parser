@@ -1,5 +1,5 @@
 .EXPORT_ALL_VARIABLES:
-APP_NAME=service-kit
+SERVICE_NAME=proxy-parser
 DOCKER_USERNAME=aibotsoft
 CGO_ENABLED=0
 GOARCH=amd64
@@ -14,6 +14,7 @@ run:
 	go run main.go
 
 test:
+	SERVICE_ENV=test
 	go test -v -cover ./...
 
 run_build:
@@ -21,16 +22,16 @@ run_build:
 
 #Команды для докера
 docker_build:
-	docker image build -f Dockerfile -t $$DOCKER_USERNAME/$$APP_NAME .
+	docker image build -f Dockerfile -t $$DOCKER_USERNAME/$$SERVICE_NAME .
 
 docker_run_rm:
-	docker run --rm -t $$DOCKER_USERNAME/$$APP_NAME
+	docker run --rm -t $$DOCKER_USERNAME/$$SERVICE_NAME
 
 docker_login:
 	docker login -u $$DOCKER_USERNAME -p $$DOCKER_PASSWORD
 
 docker_push:
-	docker push $$DOCKER_USERNAME/$$APP_NAME
+	docker push $$DOCKER_USERNAME/$$SERVICE_NAME
 
 docker_deploy: linux_build docker_build docker_login docker_push
 
@@ -39,5 +40,5 @@ kube_deploy:
 	kubectl apply -f k8s/
 
 kube_rol:
-	kubectl -n micro rollout restart deployment $$APP_NAME
+	kubectl -n micro rollout restart deployment $$SERVICE_NAME
 

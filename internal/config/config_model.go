@@ -21,7 +21,6 @@ type Controller struct {
 
 type Service struct {
 	Name        string
-	Environment string
 	Env         string
 	TestLoadEnv bool `envconfig:"TEST_LOAD_ENV"`
 	//Logging  Logging

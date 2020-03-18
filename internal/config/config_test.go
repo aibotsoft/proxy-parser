@@ -30,3 +30,12 @@ func TestProxyClient(t *testing.T) {
 	assert.Equal(t, 5*time.Second, cfg.ProxyClient.Timeout)
 	assert.Equal(t, "https://www.sslproxies.org/", cfg.ProxyClient.Url)
 }
+
+func TestConfig_isDev(t *testing.T) {
+	cfg := config.NewConfig()
+	//t.Logf("%+v", cfg)
+	cfg.Service.Env = "dev"
+	assert.True(t, cfg.IsDev())
+	cfg.Service.Env = "test"
+	assert.False(t, cfg.IsDev())
+}

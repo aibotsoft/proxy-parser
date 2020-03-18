@@ -65,7 +65,9 @@ func (p *ProxyClient) getNewProxy() (*html.Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	p.logTrace(resp)
+	if p.cfg.IsDev() {
+		p.logTrace(resp)
+	}
 
 	body := resp.RawBody()
 	defer body.Close()
