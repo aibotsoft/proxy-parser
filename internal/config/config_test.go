@@ -3,6 +3,7 @@ package config_test
 import (
 	"github.com/aibotsoft/proxy-parser/internal/config"
 	"github.com/stretchr/testify/assert"
+	"os"
 	"testing"
 	"time"
 )
@@ -20,9 +21,9 @@ func TestNew(t *testing.T) {
 
 func TestService(t *testing.T) {
 	cfg := config.NewConfig()
+	os.Getenv("SERVICE_ENV")
 	assert.Equal(t, true, cfg.Service.TestLoadEnv)
 	assert.Equal(t, "proxy-parser", cfg.Service.Name)
-
 }
 func TestProxyClient(t *testing.T) {
 	cfg := config.NewConfig()
