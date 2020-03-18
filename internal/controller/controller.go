@@ -29,6 +29,7 @@ func (c Controller) Job() {
 	proxy, err := c.client.CollectProxy()
 	if err != nil {
 		c.log.Println("Error CollectProxy: ", err)
+		return
 	}
 	c.storage.SaveProxyList(proxy)
 }

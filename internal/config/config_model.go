@@ -16,7 +16,7 @@ type Config struct {
 }
 
 type Controller struct {
-	Period time.Duration `default:"10s"`
+	Period time.Duration `default:"30s"`
 }
 
 type Service struct {

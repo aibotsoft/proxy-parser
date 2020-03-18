@@ -1,3 +1,4 @@
+#service_name: proxy-parser
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -7,14 +8,14 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    name: service-kit
-  name: service-kit
+    name: proxy-parser
+  name: proxy-parser
   namespace: micro
 spec:
   selector:
-    app: service-kit
+    app: proxy-parser
   ports:
-    - name: service-kit
+    - name: proxy-parser
       protocol: TCP
       port: 80
       targetPort: 80
@@ -32,43 +33,43 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: service-kit
+  name: proxy-parser
   namespace: micro
   labels:
-    app: service-kit
+    app: proxy-parser
 data:
-  SERVICE_NAME: service-kit
-  SERVICE_ENVIRONMENT: prod
+  SERVICE_NAME: proxy-parser
+  NATS_URL: nats://demo.nats.io
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: service-kit
+  name: proxy-parser
   namespace: micro
   labels:
-    app: service-kit
+    app: proxy-parser
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: service-kit
+      app: proxy-parser
   template:
     metadata:
       labels:
-        app: service-kit
+        app: proxy-parser
     spec:
       terminationGracePeriodSeconds: 5
       containers:
-        - name: service-kit
-          image: aibotsoft/service-kit
+        - name: proxy-parser
+          image: aibotsoft/proxy-parser
           imagePullPolicy: Always
           envFrom:
             - configMapRef:
                 name: micro-env
             - configMapRef:
-                name: service-kit
+                name: proxy-parser
           ports:
-            - name: service-kit
+            - name: proxy-parser
               containerPort: 80
           resources:
             limits:
