@@ -43,6 +43,25 @@ func TestStorage_SaveProxy(t *testing.T) {
 	assert.False(t, oldProxy, "Add not new proxy")
 }
 
-//func TestStorage_SaveProxyList(t *testing.T) {
-//
-//}
+func TestStorage_Pu(t *testing.T) {
+
+}
+
+func TestStorage_PublishNewProxy(t *testing.T) {
+	s, _ := initStorage(t)
+	receiveProxy := &proxy_item.ProxyItem{}
+
+	s.SubscribeNewProxy(receiveProxy)
+
+	testProxy := &proxy_item.ProxyItem{
+		Ip:   "1.1.1.1",
+		Port: "80",
+		Code: "US",
+	}
+
+	err := s.PublishNewProxy(testProxy)
+	assert.Nil(t, err)
+	time.Sleep(900 * time.Millisecond)
+	t.Log(receiveProxy)
+	assert.Equal(t, testProxy, receiveProxy)
+}

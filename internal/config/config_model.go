@@ -8,15 +8,16 @@ import (
 type Config struct {
 	Service     Service
 	ProxyClient ProxyClient
+	Broker      Broker
+	Controller  Controller
 	//Database Database
 	//Logging  Logging
 	//Web      Web
-	Broker     Broker
-	Controller Controller
 }
 
 type Controller struct {
-	Period time.Duration `default:"30s"`
+	Period          time.Duration `default:"30s"`
+	NewProxyAddress string        `default:"proxy.new"`
 }
 
 type Service struct {

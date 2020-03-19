@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"fmt"
 	"github.com/aibotsoft/proxy-parser/internal/cache"
 	"github.com/aibotsoft/proxy-parser/internal/config"
 	"github.com/aibotsoft/proxy-parser/internal/proxy_item"
@@ -14,6 +15,7 @@ type Storage struct {
 	log   *log.Logger
 	cache *ristretto.Cache
 	nc    *nats.Conn
+	ec    *nats.EncodedConn
 }
 
 func NewStorage(cfg *config.Config, log *log.Logger) (*Storage, error) {
@@ -25,7 +27,24 @@ func NewStorage(cfg *config.Config, log *log.Logger) (*Storage, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Storage{cfg: cfg, log: log, cache: c, nc: nc}, nil
+	ec, _ := nats.NewEncodedConn(nc, nats.JSON_ENCODER)
+	return &Storage{cfg: cfg, log: log, cache: c, nc: nc, ec: ec}, nil
+}
+
+func (s Storage) SubscribeNewProxy(receiveProxy *proxy_item.ProxyItem) {
+	_, err := s.ec.Subscribe(s.cfg.Controller.NewProxyAddress, func(p *proxy_item.ProxyItem) {
+		*receiveProxy = *p
+		fmt.Printf("Received a proxy: %+v\n", receiveProxy)
+
+	})
+	if err != nil {
+		s.log.Fatalln("SubscribeNewProxy Error: ", err)
+	}
+}
+
+func (s Storage) PublishNewProxy(p *proxy_item.ProxyItem) error {
+	return s.ec.Publish(s.cfg.Controller.NewProxyAddress, p)
+
 }
 
 func (s Storage) SaveProxy(p proxy_item.ProxyItem) bool {
@@ -38,8 +57,12 @@ func (s Storage) SaveProxy(p proxy_item.ProxyItem) bool {
 		//s.log.Println("Proxy in cache: ")
 		return false
 	}
-	//s.log.Println("TODO: Отправляем прокси в nc")
-	//s.log.Println("Сохраняем в кеш")
+
+	err := s.PublishNewProxy(&p)
+	if err != nil {
+		s.log.Println("Error Publish proxy: ", err)
+		return false
+	}
 
 	ok = s.cache.Set(proxyKey, true, 1)
 	return true

@@ -39,7 +39,10 @@ metadata:
     app: proxy-parser
 data:
   SERVICE_NAME: proxy-parser
-  NATS_URL: nats://demo.nats.io
+  NATS_URL: nats://nats
+  CONTROLLER_PERIOD: 90s
+
+
 ---
 apiVersion: apps/v1
 kind: Deployment
