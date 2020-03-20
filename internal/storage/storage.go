@@ -48,11 +48,9 @@ func (s Storage) PublishNewProxy(p *proxy_item.ProxyItem) error {
 }
 
 func (s Storage) SaveProxy(p proxy_item.ProxyItem) bool {
-	//s.log.Println(p)
-	proxyKey := p.Ip + ":" + p.Port
 	//s.log.Println(proxyKey)
 
-	_, ok := s.cache.Get(proxyKey)
+	_, ok := s.cache.Get(p.Key())
 	if ok {
 		//s.log.Println("Proxy in cache: ")
 		return false
@@ -64,7 +62,7 @@ func (s Storage) SaveProxy(p proxy_item.ProxyItem) bool {
 		return false
 	}
 
-	ok = s.cache.Set(proxyKey, true, 1)
+	ok = s.cache.Set(p.Key(), true, 1)
 	return true
 
 }
@@ -77,7 +75,7 @@ func (s Storage) SaveProxyList(proxyList []proxy_item.ProxyItem) {
 		newProxy := s.SaveProxy(p)
 		if newProxy {
 			countNewProxy++
-			s.log.Printf("Добавили новое прокси %s", p.Ip)
+			s.log.Println("Добавили новое прокси ", p)
 		}
 	}
 	s.log.Printf("Всего добавили %d новых прокси", countNewProxy)

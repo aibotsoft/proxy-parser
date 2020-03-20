@@ -12,12 +12,12 @@ import (
 )
 
 const (
-	proxyTablePath = `//table[@id="proxylisttable"]/tbody/tr`
-	proxyIP        = 0
-	proxyPort      = 1
-	proxyCode      = 2
-	proxyCountry   = 3
-	proxyAnonymity = 4
+	proxyTablePath   = `//table[@id="proxylisttable"]/tbody/tr`
+	proxyIP          = 0
+	proxyPort        = 1
+	proxyCountryCode = 2
+	proxyCountryName = 3
+	proxyAnonymity   = 4
 )
 
 type ProxyClient struct {
@@ -46,14 +46,14 @@ func (p *ProxyClient) scrapeProxy(proxyPageNode *html.Node) ([]proxy_item.ProxyI
 			p.log.Println("Error QueryAll", err)
 			continue
 		}
-		item := proxy_item.ProxyItem{
-			Ip:        htmlquery.InnerText(td[proxyIP]),
-			Port:      htmlquery.InnerText(td[proxyPort]),
-			Code:      htmlquery.InnerText(td[proxyCode]),
-			Country:   htmlquery.InnerText(td[proxyCountry]),
-			Anonymity: htmlquery.InnerText(td[proxyAnonymity]),
-			CreatedAt: time.Now().UTC(),
-			UpdatedAt: time.Now().UTC(),
+		item, err := proxy_item.NewProxyItem(
+			htmlquery.InnerText(td[proxyIP]),
+			htmlquery.InnerText(td[proxyPort]),
+			htmlquery.InnerText(td[proxyCountryCode]),
+			htmlquery.InnerText(td[proxyCountryName]))
+		if err != nil {
+			p.log.Println(err)
+			continue
 		}
 		proxyList = append(proxyList, item)
 	}
