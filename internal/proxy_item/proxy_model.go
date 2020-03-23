@@ -2,7 +2,6 @@ package proxy_item
 
 import (
 	"fmt"
-	"net"
 	"strconv"
 	"time"
 )
@@ -10,7 +9,7 @@ import (
 // Proxy from https://www.sslproxies.org/
 type ProxyItem struct {
 	ProxyId   int
-	ProxyIp   net.IP
+	ProxyIp   string
 	ProxyPort int
 	Country   Country
 	Anonymity string
@@ -19,11 +18,7 @@ type ProxyItem struct {
 }
 
 func (p ProxyItem) Key() string {
-	tcp := net.TCPAddr{
-		IP:   p.ProxyIp,
-		Port: p.ProxyPort,
-	}
-	return tcp.String()
+	return p.ProxyIp + ":" + strconv.Itoa(p.ProxyPort)
 }
 
 // NewProxyItem create ProxyItem from string values
@@ -32,12 +27,13 @@ func NewProxyItem(sIp string, sPort string, sCountryCode string, sCountryName st
 	if err != nil {
 		return ProxyItem{}, fmt.Errorf("port should be int, got %s", sPort)
 	}
-	proxyIp := net.ParseIP(sIp)
-	if proxyIp == nil {
-		return ProxyItem{}, fmt.Errorf("ip should not be empty, got %s", sIp)
-	}
+	//proxyIp := net.ParseIP(sIp).To4()
+	//
+	//if proxyIp == nil {
+	//	return ProxyItem{}, fmt.Errorf("ip should not be empty, got %s", sIp)
+	//}
 	return ProxyItem{
-		ProxyIp:   proxyIp,
+		ProxyIp:   sIp,
 		ProxyPort: proxyPort,
 		Country: Country{
 			CountryName: sCountryName,
